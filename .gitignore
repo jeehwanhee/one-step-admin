@@ -1,0 +1,113 @@
+#############################################
+# Backend — Java / Gradle
+#############################################
+backend/build/
+backend/.gradle/
+backend/bin/
+backend/out/
+backend/!gradle/wrapper/gradle-wrapper.jar
+
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Gradle wrapper jar는 커밋해야 함
+!backend/gradle/wrapper/gradle-wrapper.jar
+
+#############################################
+# Frontend — Node / Vite
+#############################################
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+frontend/coverage/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+#############################################
+# 환경 변수 · 시크릿 (절대 커밋 금지)
+#############################################
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.jks
+
+# Spring 로컬 설정
+**/application-local.yml
+**/application-local.yaml
+**/application-local.properties
+**/application-secret.yml
+
+# Firebase Admin SDK 서비스 계정 키
+**/firebase-service-account.json
+**/*-firebase-adminsdk-*.json
+**/serviceAccountKey.json
+
+#############################################
+# IDE — IntelliJ
+#############################################
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+#############################################
+# IDE — VS Code / Eclipse
+#############################################
+.vscode/
+!.vscode/extensions.json
+.project
+.classpath
+.settings/
+.apt_generated/
+.factorypath
+
+#############################################
+# OS
+#############################################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+#############################################
+# 로그 · 임시 파일
+#############################################
+*.log
+logs/
+*.tmp
+*.bak
+*.swp
+*~
+
+#############################################
+# Docker · DB 데이터
+#############################################
+docker/data/
+mysql-data/
+*.sql.gz
+dump.rdb
+
+#############################################
+# 테스트 · 커버리지
+#############################################
+backend/build/reports/
+backend/build/test-results/
+.nyc_output/
