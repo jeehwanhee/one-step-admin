@@ -105,7 +105,7 @@ classDiagram
         VIEW_ISOLATION_SCORE
         ASSIGN_YOUTH
         CREATE_ORG_ACCOUNT
-        DEACTIVATE_ORG_ACCOUNT
+        DELETE_ORG_ACCOUNT
     }
     class SyncStatus {
         <<enumeration>>
@@ -231,7 +231,7 @@ erDiagram
 | 테이블 | 제약 | 목적 |
 |---|---|---|
 | `youth` | `UNIQUE (firestore_uid)` | 동기화 시 upsert 기준 |
-| `quest_log` | `UNIQUE (youth_id, completed_at)` | **동기화 멱등성** (UC-14 4b) |
+| `quest_log` | `UNIQUE (youth_id, completed_at)` | **동기화 멱등성** (UC-14 4a) |
 | `admin_user` | `UNIQUE (email)` | 로그인 식별자 |
 | `org_summary` | `UNIQUE (organization_id)` | 기관당 1건 |
 
@@ -280,6 +280,10 @@ UC-12의 특수 사항은 "업데이트 불필요 시 조회 속도 최우선"�
 `admin_user_id`로 조인하면 기관을 알 수 있지만, 감사 로그는 조회 빈도가 높고 건수가 가장 빠르게 증가한다. 조인 없이 기관별 필터링이 가능하도록 비정규화했다.
 
 또한 계정이 삭제되거나 소속이 바뀌어도 **당시 어느 기관 소속으로 열람했는지**가 보존된다.
+
+### 기관 계정 "삭제"(UC-06)를 active 플래그로 구현하는 이유
+
+UC-06은 사용자 관점에서 "삭제"지만, 계정이 실제로 지워지면 그 계정이 남긴 `AuditLog`의 `admin_user_id` 참조가 끊긴다. `AdminUser.active`를 false로 바꾸는 방식(soft delete)으로 구현해 감사 기록을 보존한다. `AuditAction.DELETE_ORG_ACCOUNT`는 이 소프트 삭제를 가리킨다.
 
 ### QuestLog에 place·mood·questLevel을 두지 않은 이유
 
