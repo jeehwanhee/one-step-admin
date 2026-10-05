@@ -24,8 +24,11 @@ classDiagram
         +Long id
         +String firestoreUid
         +String nickname
+        +int age
+        +Gender gender
         +int tier
         +int tierProgress
+        +List~Integer~ questResultsQueue
         +LocalDateTime lastActiveAt
         +LocalDateTime assignedAt
         +inactiveDays() int
@@ -96,6 +99,11 @@ classDiagram
         ADMIN
         ORG
     }
+    class Gender {
+        <<enumeration>>
+        MALE
+        FEMALE
+    }
     class AuditAction {
         <<enumeration>>
         LOGIN
@@ -163,8 +171,11 @@ erDiagram
         bigint organization_id FK "NULL이면 미배정"
         varchar firestore_uid UK
         varchar nickname
+        smallint age
+        varchar gender
         smallint tier
         int tier_progress
+        json quest_results_queue
         datetime last_active_at
         datetime assigned_at
         datetime created_at
@@ -294,6 +305,14 @@ UC-06은 사용자 관점에서 "삭제"지만, 계정이 실제로 지워지면
 ### tier_progress 매핑 근거
 
 Firestore `users.progress`는 누적 경험치가 아니라 **현재 티어 내 진행도**다(`calculateTierProgress`가 티어 상승 시 임계값만큼 차감한다). 이름을 `totalExp`로 두면 "총 누적 경험치"로 오해하므로 소스 의미에 맞춰 `tier_progress`로 명명한다.
+
+### gender를 Boolean 그대로 두지 않은 이유
+
+Firestore `users.gender`는 Boolean(true=남자)으로 저장된다. 의미가 이름만으로 드러나지 않는 저장 형식이라, 동기화 시 `MALE`/`FEMALE` 열거형으로 변환해 저장한다.
+
+### questResultsQueue를 별도 테이블로 두지 않은 이유
+
+최근 10개 성공/실패를 담는 고정 길이 슬라이딩 윈도우로, Youth 1건당 항상 정확히 1개만 존재한다(개별 이력이 아니라 현재 상태의 일부). `QuestLog`처럼 행 단위로 쌓이는 데이터가 아니므로 `Youth`에 JSON 컬럼으로 둔다. 검색·집계가 필요해지면 그때 정규화한다.
 
 ### Youth에 앱 원본 데이터를 복제하는 이유
 
